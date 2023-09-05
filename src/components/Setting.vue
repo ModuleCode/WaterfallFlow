@@ -39,6 +39,7 @@ import SettingItem from "@/components/SettingItem.vue"
 import { isPhone } from "@/tools/tools";
 const store = useStore()
 const props = defineProps(['display']);
+
 const column = ref()
 const gap = ref()
 function change() {
@@ -57,6 +58,8 @@ function changereal() {
 const dir = ref('ltr')
 onMounted(() => {
     dir.value = store.menuopenfs
+    column.value=store.column
+    gap.value=store.gap
 })
 // 选项
 const options = [

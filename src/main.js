@@ -5,6 +5,7 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import 'animate.css';
 import router from './router'
+// import mockjs from 'mockjs';
 const pinia = createPinia()
 
 

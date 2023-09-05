@@ -4,15 +4,19 @@ import { defineStore } from "pinia";
 export const useStore = defineStore('main', {
     state: () => {
         return {
-            column: 2,
+            column: 3,
             gap: 3,
             //是否实时更新
             realTime:false,
+            drawer:false,
             menuopenfs:"rtl",
-            
+            dataList:[],
+            reshDataList:[]
         }
     },
-    getters: {},
+    getters: {
+       
+    },
     actions: {}
 
 })

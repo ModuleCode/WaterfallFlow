@@ -4,31 +4,29 @@
         <div class="fs-waterfall-content" ref="contentRef" @mousewheel="topbarshow" @touchstart="touchstart"
             @touchmove="touchmove">
             <div class="fs-waterfall-list">
-
-                <div class="fs-waterfall-item" v-for="(item, index) in state.imageList" :key="item.id" :style="{
-                    width: `${state.imageWidth}px`,
-                    transform: `translate3d(${imagePos[index].x}px, ${imagePos[index].y}px, 0)`,
-                }">
-                    <i-image :imageData="item" />
+                <!--  :style="{
+                    width: `${state.imageWidth}px`, transform: `translate3d(${imagePos[index].x}px, ${imagePos[index].y}px))`
+                }" -->
+                <div class="fs-waterfall-item" v-for="(item, index) in imageList" :key="index">
+                    <slot name="itemSlot" :param="item"></slot>
                 </div>
+
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, reactive, ref, defineProps, watch } from "vue";
+import { computed, onMounted, onUnmounted, reactive, ref, defineProps, watch, defineEmits } from "vue";
 import { debounce, rafThrottle, cannotzoom } from "@/tools/tools";
-import IImage from "./IImage.vue";
+
 import { ElNotification } from 'element-plus'
 import tipsfx from '@/assets/tipsfx.mp3';
 import { useSound } from '@vueuse/sound'
-import request from "@/api/request";
-
 const { play } = useSound(tipsfx)
-const props = defineProps(['column', 'gap', 'pageSize']);
+const props = defineProps(['column', 'gap', 'pageSize', 'imageList', 'list', 'page']);
 const contentRef = ref();
-const emit = defineEmits(['topbarshow'])
+const emit = defineEmits(['topbarshow', 'getImgList','overload'])
 const columnHeight = ref([]);
 const imagePos = ref([]);
 cannotzoom()
@@ -43,9 +41,8 @@ const state = reactive({
     isfinish: false,
     page: 1,
     imageWidth: 0,
-    imageList: [],
-    tagsList: []
 });
+
 // // 获取最小列位置和高度
 const min = computed(() => {
     let minIndex = -1,
@@ -66,12 +63,11 @@ const min = computed(() => {
 const getImageList = async (page, pageSize, isFirst) => {
     if (state.isfinish) return;
     state.loading = true;
-    const response = await request.get(`/pubuliu/${page}/${pageSize}`)
-    console.log(response);
-    const list = (await response).data.rows;
+    emit('getImgList')
     state.page++;
     navigator.vibrate(100);
-    if (!list.length) {
+    if (!props.list.length) {
+        // emit('overload')
         ElNotification({
             title: '提示',
             message: '到底啦！',
@@ -83,14 +79,12 @@ const getImageList = async (page, pageSize, isFirst) => {
         return;
     }
 
-    computedImagePos(list, isFirst);
-    state.imageList = [...state.imageList, ...list];
+    computedImagePos(props.list, isFirst);
+   
     state.loading = false;
 };
 const computedImagePos = (list, isFirst) => {
-
     list.forEach((item, index) => {
-
         const imageHeight = Math.floor((item.height * state.imageWidth) / item.width);
         if (isFirst && index < props.column) {
             imagePos.value.push({
@@ -130,7 +124,7 @@ const handleResize = debounce(() => {
         state.imageWidth = (contentRef.value.clientWidth - (props.column - 1) * props.gap) / props.column;
         imagePos.value = [];
         columnHeight.value = [];
-        computedImagePos(state.imageList, true);
+        computedImagePos(imageList, true);
     }
 }, 100);
 
@@ -140,7 +134,6 @@ const init = () => {
         getImageList(state.page, props.pageSize, true);
         contentRef.value.addEventListener("scroll", handleScroll);
         contentRef.value.addEventListener("scroll", (e) => {
-            // console.log(e);
         });
         window.addEventListener("resize", handleResize);
     }

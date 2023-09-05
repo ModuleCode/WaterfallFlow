@@ -2,10 +2,10 @@
     <div class="iimage-container" @dblclick="likeEvent" :class="{ fadeIn: clicklike }">
         <!-- 手势作用区域 -->
         <div class="black-box-content" >
-            <div class="like-box" v-if="clicklike" :class="{ fadeOut: clicklike }">
+            <div class="like-box" v-if="clicklike" :class="{ fadeOut: clicklike }" >
                 <img src="@/assets/like.svg">
             </div>
-            <div class="like-box" v-else>
+            <div class="like-box" v-else >
                 <img src="@/assets/unlike.svg">
             </div>
             <span class="liketotal">{{ imageData.likeTotal }}</span>
@@ -80,7 +80,6 @@ function unlike() {
 }
 
 .iimage-container {
-
     /* pointer-events: none; */
     -webkit-user-select: none;
     /*禁用手机浏览器的用户选择功能 */

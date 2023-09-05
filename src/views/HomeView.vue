@@ -1,33 +1,33 @@
 <template>
-  <el-drawer v-model="drawer" :direction="store.menuopenfs" :with-header="false" :size="size" >
+  <menu-small-panel :show="show"></menu-small-panel>
+  <el-drawer v-model="store.drawer" :direction="store.menuopenfs" :with-header="false" :size="size">
     <menu-panel />
   </el-drawer>
-  <pu-bu-liu :column="store.column" :gap="store.gap" :pageSize="30" @topbarshow="topbarshow" />
+
+  <water-flow :column="store.column" :gap="store.gap" :reshDataList="reshDataList" @getDataList="getImageList"
+    :pageSize="30" @topbarshow="topbarshow">
+
+  </water-flow>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
-import PuBuLiu from '@/components/PuBuLiu.vue';
-import { isPhone } from '@/tools/tools.js'
+
+import { ref } from 'vue';
 import { useStore } from '@/store/index'
 import MenuPanel from '@/components/MenuPanel.vue';
+import WaterFlow from "@/components/WaterFlow.vue";
+import MenuSmallPanel from '@/components/MenuSmallPanel.vue';
 const store = useStore()
+const size=ref('90%')
+const show=ref(false)
 
-const direction = ref('ttb')//方向
-const size = ref("90%")//大小
-const drawer = ref(true)
 
-function topbarshow(displayValue) {
-  drawer.value = displayValue
+
+
+function topbarshow(e) {
+  console.log(e);
+  show.value=e
+
 }
-onMounted(() => {
-  if (isPhone()) {
-    store.gap="ttb"
-  }else{
-    store.gap="ltr"
-    size.value="40%"
-  }
-})
-
 </script>
 
 

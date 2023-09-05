@@ -1,4 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
+
+
 module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
@@ -8,7 +10,7 @@ module.exports = defineConfig({
 
     proxy: {
       '/api': {
-        target: 'http://192.168.2.178:8888/',
+        target: 'http://192.168.2.163:8888/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
@@ -17,7 +19,7 @@ module.exports = defineConfig({
     },
     // 此处开启 https
     https: false,
-    
+
   },
 
 
